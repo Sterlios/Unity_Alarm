@@ -31,7 +31,7 @@ public class Door : MonoBehaviour
     {
         if (collision.TryGetComponent<Interactive>(out _interactive))
         {
-            _interactive.Used += ChangeState;
+            _interactive.Used += OnUsed;
         }
     }
 
@@ -39,12 +39,12 @@ public class Door : MonoBehaviour
     {
         if (collision.TryGetComponent<Interactive>(out _interactive))
         {
-            _interactive.Used -= ChangeState;
+            _interactive.Used -= OnUsed;
             _interactive = null;
         }
     }
 
-    private void ChangeState()
+    private void OnUsed()
     {
         IsOpen = IsOpen ? false : true;
         _opened.Invoke();

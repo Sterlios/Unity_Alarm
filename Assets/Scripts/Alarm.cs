@@ -18,13 +18,14 @@ public class Alarm: MonoBehaviour
     {
         _audio = GetComponent<AudioSource>();
         _audio.volume = 0;
+        _audio.Play();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent<Interactive>(out _interactive))
         {
-            _interactive.Used += Play;
+            _interactive.Used += OnUsed;
         }
     }
 
@@ -32,44 +33,29 @@ public class Alarm: MonoBehaviour
     {
         if (collision.TryGetComponent<Interactive>(out _interactive))
         {
-            _interactive.Used -= Play;
+            _interactive.Used -= OnUsed;
         }
     }
 
-    private void Play()
+    private void OnUsed()
     {
         if (_playJob != null)
         {
             StopCoroutine(_playJob);
         }
 
-        _playJob = StartCoroutine(PlayCoroutine());
+        _isPlaying = !_isPlaying;
+        float target = _isPlaying == true ? _maxValue : _minValue;
+
+        _playJob = StartCoroutine(PlayCoroutine(target));
     }
 
-    private IEnumerator PlayCoroutine()
+    private IEnumerator PlayCoroutine(float target)
     {
-        if (_isPlaying == false)
+        while (_audio.volume != target)
         {
-            _audio.Play();
-            _isPlaying = true;
-
-            while (_audio.volume < _maxValue)
-            {
-                _audio.volume += Mathf.MoveTowards(_minValue, _maxValue, _step * Time.deltaTime);
-                yield return null;
-            }
-        }
-        else
-        {
-            _isPlaying = false;
-
-            while (_audio.volume > _minValue)
-            {
-                _audio.volume -= Mathf.MoveTowards(_minValue, _maxValue, _step * Time.deltaTime);
-                yield return null;
-            }
-
-            _audio.Stop();
+            _audio.volume = Mathf.MoveTowards(_audio.volume, target, _step * Time.deltaTime);
+            yield return null;
         }
     }
 }

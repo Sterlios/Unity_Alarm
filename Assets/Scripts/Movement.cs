@@ -35,7 +35,7 @@ public class Movement : MonoBehaviour
     {
         if (collision.TryGetComponent<Door>(out _door))
         {
-            _door.Opened += EnterInHouse;
+            _door.Opened += OnOpened;
         }
     }
 
@@ -43,11 +43,11 @@ public class Movement : MonoBehaviour
     {
         if (collision.TryGetComponent<Door>(out _door))
         {
-            _door.Opened -= EnterInHouse;
+            _door.Opened -= OnOpened;
         }
     }
 
-    private void EnterInHouse()
+    private void OnOpened()
     {
         _isEntered = !_isEntered;
         _spriteRenderer.enabled = !_isEntered;
