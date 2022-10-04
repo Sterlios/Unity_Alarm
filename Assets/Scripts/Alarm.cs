@@ -20,6 +20,22 @@ public class Alarm: MonoBehaviour
         _audio.volume = 0;
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<Interactive>(out _interactive))
+        {
+            _interactive.Used += Play;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<Interactive>(out _interactive))
+        {
+            _interactive.Used -= Play;
+        }
+    }
+
     private void Play()
     {
         if (_playJob != null)
@@ -54,22 +70,6 @@ public class Alarm: MonoBehaviour
             }
 
             _audio.Stop();
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.TryGetComponent<Interactive>(out _interactive))
-        {
-            _interactive.Used += Play;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.TryGetComponent<Interactive>(out _interactive))
-        {
-            _interactive.Used -= Play;
         }
     }
 }

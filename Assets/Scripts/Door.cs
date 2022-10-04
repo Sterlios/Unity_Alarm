@@ -9,6 +9,8 @@ public class Door : MonoBehaviour
 {
     public bool IsOpen { get; private set; }
 
+    private const string IsOpenName = "isOpen";
+
     private Animator _animator;
     private Interactive _interactive = null;
     private UnityEvent _opened = new UnityEvent();
@@ -23,13 +25,6 @@ public class Door : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         IsOpen = false;
-    }
-
-    private void ChangeState()
-    {
-        IsOpen = IsOpen ? false : true;
-        _opened.Invoke();
-        _animator.SetBool("isOpen", IsOpen);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -47,5 +42,13 @@ public class Door : MonoBehaviour
             _interactive.Used -= ChangeState;
             _interactive = null;
         }
+    }
+
+    private void ChangeState()
+    {
+        IsOpen = IsOpen ? false : true;
+        _opened.Invoke();
+        int isOpenHash = Animator.StringToHash(IsOpenName);
+        _animator.SetBool(isOpenHash, IsOpen);
     }
 }

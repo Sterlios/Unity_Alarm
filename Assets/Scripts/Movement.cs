@@ -6,6 +6,8 @@ public class Movement : MonoBehaviour
 {
     [SerializeField] private int _speed = 1;
 
+    private const string IsWalkName = "isWalk";
+
     private bool _isEntered = false;
     private Animator _animator;
     private Door _door;
@@ -22,16 +24,11 @@ public class Movement : MonoBehaviour
         if(_isEntered == false)
         {
             float direction = Input.GetAxis("Horizontal");
-            _animator.SetBool("isWalk", direction != 0);
+            int isWalkHash = Animator.StringToHash(IsWalkName);
+            _animator.SetBool(isWalkHash, direction != 0);
             _spriteRenderer.flipX = direction < 0;
             transform.position += new Vector3(direction * _speed * Time.deltaTime, 0, 0);
         }
-    }
-
-    private void EnterInHouse()
-    {
-        _isEntered = _isEntered ? false : true;
-        _spriteRenderer.enabled = !_isEntered;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -48,5 +45,11 @@ public class Movement : MonoBehaviour
         {
             _door.Opened -= EnterInHouse;
         }
+    }
+
+    private void EnterInHouse()
+    {
+        _isEntered = !_isEntered;
+        _spriteRenderer.enabled = !_isEntered;
     }
 }
